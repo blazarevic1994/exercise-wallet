@@ -8,6 +8,11 @@ spring:
     uri: mongodb://localhost:27017/playtomic
 stripe.simulator.charges-uri: https://sandbox.playtomic.io/v1/stripe-simulator/charges
 stripe.simulator.refunds-uri: https://sandbox.playtomic.io/v1/stripe-simulator/payments/{payment_id}/refunds
+# Max number of transaction retrials in case transaction failed
+transaction.max.trials: 100
+# If transaction failed, try again in 10ms
+transaction.timeout: 100
+
 ---
 spring:
   profiles: test
@@ -20,3 +25,7 @@ spring:
     initialize: false
 stripe.simulator.charges-uri: http://localhost:9999
 stripe.simulator.refunds-uri: http://localhost:9999
+# Max number of transaction retrials in case transaction failed
+transaction.max.trials: 100
+# If transaction failed, try again in 10ms
+transaction.timeout: 100

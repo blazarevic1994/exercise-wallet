@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.playtomic.tests.wallet.exception.StripeRestTemplateResponseErrorHandler;
 import com.playtomic.tests.wallet.exception.StripeServiceException;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.lang.NonNull;
@@ -32,8 +33,8 @@ public class StripeService {
     @NonNull
     private RestTemplate restTemplate;
 
-    public StripeService(@Value("stripe.simulator.charges-uri") @NonNull URI chargesUri,
-                         @Value("stripe.simulator.refunds-uri") @NonNull URI refundsUri,
+    public StripeService(@Value("${stripe.simulator.charges-uri}") @NonNull URI chargesUri,
+                         @Value("${stripe.simulator.refunds-uri}") @NonNull URI refundsUri,
                          @NonNull RestTemplateBuilder restTemplateBuilder) {
         this.chargesUri = chargesUri;
         this.refundsUri = refundsUri;
@@ -53,10 +54,10 @@ public class StripeService {
      *
      * @throws StripeServiceException
      */
-    public void charge(@NonNull String creditCardNumber, @NonNull BigDecimal amount) throws StripeServiceException {
+    public ChargeResponse charge(@NonNull String creditCardNumber, @NonNull BigDecimal amount) throws StripeServiceException {
         ChargeRequest body = new ChargeRequest(creditCardNumber, amount);
         // Object.class because we don't read the body here.
-        restTemplate.postForObject(chargesUri, body, Object.class);
+        return restTemplate.postForObject(chargesUri, body, ChargeResponse.class);
     }
 
     /**
@@ -77,5 +78,16 @@ public class StripeService {
         @NonNull
         @JsonProperty("amount")
         BigDecimal amount;
+    }
+    @Data
+    public static class ChargeResponse {
+
+        @NonNull
+        @JsonProperty("id")
+        private String id;
+
+        @NonNull
+        @JsonProperty("amount")
+        private BigDecimal amount;
     }
 }
