@@ -18,22 +18,16 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 public class WalletService {
 
-    private Logger log = LoggerFactory.getLogger(WalletService.class);
-
     private final WalletRepository walletRepository;
-
     private final TransactionRepository transactionRepository;
-
     private final StripeService stripeService;
-
     private final int maxTrials;
-
     private final int timeout;
+    private Logger log = LoggerFactory.getLogger(WalletService.class);
 
 
     @Autowired
@@ -96,12 +90,11 @@ public class WalletService {
                     log.error("Exception during sleep:", e);
                 }
             }
-        } while(!updatedWallet && ++trials <= maxTrials);
+        } while (!updatedWallet && ++trials <= maxTrials);
 
         if (!updatedWallet) {
-            // This is very bad situation. In this case it would be nice to
-            // inform some internal health service about it.
-
+            // This is very bad situation. Transaction will have status Reject,
+            // and some check service could detect it and try again.
             transactionsEntity.setStatus(TransactionsEntity.Status.REJECTED);
             transactionRepository.save(transactionsEntity);
             log.error("Transaction failed!");
@@ -111,11 +104,11 @@ public class WalletService {
         return resultedEntity;
     }
 
-    public List<TransactionsEntity> getAllTransactions(){
+    public List<TransactionsEntity> getAllTransactions() {
         return transactionRepository.findAll();
     }
 
-    public List<TransactionsEntity> getTransactionsForCardid(String cardId){
+    public List<TransactionsEntity> getTransactionsForCardid(String cardId) {
         return transactionRepository.getAllByCardId(cardId);
     }
 

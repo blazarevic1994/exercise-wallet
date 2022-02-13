@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.NonNull;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Document

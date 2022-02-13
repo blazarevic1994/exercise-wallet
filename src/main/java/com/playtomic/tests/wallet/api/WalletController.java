@@ -17,10 +17,9 @@ import java.util.List;
 @RestController
 public class WalletController {
 
-    private Logger log = LoggerFactory.getLogger(WalletController.class);
-
     @Autowired
     WalletService walletService;
+    private Logger log = LoggerFactory.getLogger(WalletController.class);
 
     @PostMapping("")
     public ResponseEntity addNewWallet(@RequestBody WalletEntity walletEntity) {
@@ -46,14 +45,14 @@ public class WalletController {
 
     @GetMapping("/transactions")
     public ResponseEntity getAllTransactions() {
-        log.info("List all transactions." );
+        log.info("List all transactions.");
         List<TransactionsEntity> transactionsEntities = walletService.getAllTransactions();
         return new ResponseEntity<>(transactionsEntities, HttpStatus.OK);
     }
 
     @GetMapping("/transactions/{cardId}")
     public ResponseEntity getAllTransactionsForCardId(@PathVariable String cardId) {
-        log.info("List all transactions for card {}.",cardId);
+        log.info("List all transactions for card {}.", cardId);
         List<TransactionsEntity> transactionsEntities = walletService.getTransactionsForCardid(cardId);
         return new ResponseEntity<>(transactionsEntities, HttpStatus.OK);
     }
